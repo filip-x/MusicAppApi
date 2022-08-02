@@ -1,12 +1,8 @@
-import { BaseEntity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 
-export class User extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @Column({ nullable: false })
+export class UserDto {
+  @ApiModelProperty()
   username: string;
-
-  @Column({ nullable: false })
+  @ApiModelProperty()
   password: string;
 }

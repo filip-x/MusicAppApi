@@ -1,12 +1,9 @@
-import { BaseEntity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 
-export class Artist extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @Column({ nullable: false })
+export class ArtistDto {
+  @ApiModelProperty()
   name: string;
 
-  @Column({ nullable: false })
+  @ApiModelProperty()
   starting_date: Date;
 }

@@ -1,17 +1,6 @@
-import { BaseEntity, Column, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Artist } from './artist';
-import { Song } from './song';
+import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 
-export class Album extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @OneToMany(() => Artist, (artist) => artist.id)
-  artist: Artist;
-
-  @Column({ nullable: true })
+export class AlbumDto {
+  @ApiModelProperty()
   name: string;
-
-  @OneToMany(() => Song, (song) => song.id)
-  song: Song;
 }
