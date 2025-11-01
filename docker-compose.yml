@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: music-app-backend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USER=filip
+      - DB_PASSWORD=fliperdaru2
+      - DB_NAME=music_api
+      - FRONTEND_URL=http://localhost
+    depends_on:
+      - mysql
+    networks:
+      - music-app-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: music-app-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - music-app-network
+    restart: unless-stopped
+
+  # Uncomment if you need a MySQL database
+  mysql:
+    image: mysql:8.0
+    container_name: music-api
+    environment:
+      - MYSQL_USER=filip
+      - MYSQL_PASSWORD=fliperdaru2
+      - MYSQL_DATABASE=music_api
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - music-app-network
+    restart: unless-stopped
+
+networks:
+  music-app-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+

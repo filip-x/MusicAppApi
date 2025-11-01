@@ -20,11 +20,11 @@ import { UserService } from './services/user.service';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'filipmusic',
-      password: 'filip20',
-      database: 'musicapp',
+      host: process.env.DB_HOST || 'localhost',
+      port: parseInt(process.env.DB_PORT) || 3306,
+      username: process.env.DB_USER || 'filip',
+      password: process.env.DB_PASSWORD || 'fliperdaru2',
+      database: process.env.DB_NAME || 'music_api',
       entities: [Artist, Song, Album, Playlist, User],
       synchronize: true,
     }),
