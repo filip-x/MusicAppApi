@@ -15,7 +15,7 @@ services:
       - DB_USER=filip
       - DB_PASSWORD=fliperdaru2
       - DB_NAME=music_api
-      - FRONTEND_URL=http://localhost
+      - FRONTEND_URL=http://localhost:81
     depends_on:
       - mysql
     networks:
@@ -28,7 +28,7 @@ services:
       dockerfile: Dockerfile
     container_name: music-app-frontend
     ports:
-      - "81:81"
+      - "81:80"
     depends_on:
       - backend
     networks:
