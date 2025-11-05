@@ -65,6 +65,15 @@ const api = {
   },
 };
 
+// Reusable Card Component
+function MusicCard({ children, gradient }: { children: React.ReactNode; gradient?: string }) {
+  return (
+    <div className={`music-card ${gradient || ''}`}>
+      {children}
+    </div>
+  );
+}
+
 // Components
 function Artists() {
   const [artists, setArtists] = useState<Artist[]>([]);
@@ -112,61 +121,73 @@ function Artists() {
     }
   };
 
-  if (loading) return <div className="text-center py-8">Loading...</div>;
+  if (loading) return <div className="loading-spinner">Loading...</div>;
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Artists</h2>
+    <div className="content-container">
+      <div className="section-header">
+        <h2 className="section-title">Artists</h2>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          className="spotify-button primary"
         >
-          {showForm ? 'Cancel' : 'Add Artist'}
+          {showForm ? 'Cancel' : '+ Add Artist'}
         </button>
       </div>
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="mb-6 p-4 bg-gray-100 rounded">
-          <div className="mb-4">
-            <label className="block mb-2">Name:</label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-2">Starting Date:</label>
-            <input
-              type="date"
-              value={formData.starting_date}
-              onChange={(e) => setFormData({ ...formData, starting_date: e.target.value })}
-              className="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-            Create Artist
-          </button>
-        </form>
+        <div className="form-card">
+          <form onSubmit={handleSubmit} className="form-content">
+            <div className="form-group">
+              <label className="form-label">Artist Name</label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="form-input"
+                placeholder="Enter artist name"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Starting Date</label>
+              <input
+                type="date"
+                value={formData.starting_date}
+                onChange={(e) => setFormData({ ...formData, starting_date: e.target.value })}
+                className="form-input"
+                required
+              />
+            </div>
+            <button type="submit" className="spotify-button success">
+              Create Artist
+            </button>
+          </form>
+        </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {artists.map((artist) => (
-          <div key={artist.id} className="p-4 border rounded shadow">
-            <h3 className="font-bold text-lg">{artist.name}</h3>
-            <p className="text-gray-600 text-sm">Started: {new Date(artist.starting_date).toLocaleDateString()}</p>
-            <button
-              onClick={() => handleDelete(artist.id!)}
-              className="mt-2 bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
-            >
-              Delete
-            </button>
+      <div className="grid-layout">
+        {artists.length === 0 ? (
+          <div className="empty-state">
+            <p>No artists yet. Add your first artist!</p>
           </div>
-        ))}
+        ) : (
+          artists.map((artist) => (
+            <MusicCard key={artist.id} gradient="gradient-purple">
+              <div className="card-content">
+                <div className="card-icon">🎤</div>
+                <h3 className="card-title">{artist.name}</h3>
+                <p className="card-subtitle">Started: {new Date(artist.starting_date).toLocaleDateString()}</p>
+                <button
+                  onClick={() => handleDelete(artist.id!)}
+                  className="card-action-button"
+                >
+                  Delete
+                </button>
+              </div>
+            </MusicCard>
+          ))
+        )}
       </div>
     </div>
   );
@@ -215,50 +236,62 @@ function Songs() {
     }
   };
 
-  if (loading) return <div className="text-center py-8">Loading...</div>;
+  if (loading) return <div className="loading-spinner">Loading...</div>;
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Songs</h2>
+    <div className="content-container">
+      <div className="section-header">
+        <h2 className="section-title">Songs</h2>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          className="spotify-button primary"
         >
-          {showForm ? 'Cancel' : 'Add Song'}
+          {showForm ? 'Cancel' : '+ Add Song'}
         </button>
       </div>
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="mb-6 p-4 bg-gray-100 rounded">
-          <div className="mb-4">
-            <label className="block mb-2">Name:</label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-            Create Song
-          </button>
-        </form>
+        <div className="form-card">
+          <form onSubmit={handleSubmit} className="form-content">
+            <div className="form-group">
+              <label className="form-label">Song Name</label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="form-input"
+                placeholder="Enter song name"
+                required
+              />
+            </div>
+            <button type="submit" className="spotify-button success">
+              Create Song
+            </button>
+          </form>
+        </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {songs.map((song) => (
-          <div key={song.id} className="p-4 border rounded shadow">
-            <h3 className="font-bold text-lg">{song.name}</h3>
-            <button
-              onClick={() => handleDelete(song.id!)}
-              className="mt-2 bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
-            >
-              Delete
-            </button>
+      <div className="grid-layout">
+        {songs.length === 0 ? (
+          <div className="empty-state">
+            <p>No songs yet. Add your first song!</p>
           </div>
-        ))}
+        ) : (
+          songs.map((song) => (
+            <MusicCard key={song.id} gradient="gradient-green">
+              <div className="card-content">
+                <div className="card-icon">🎵</div>
+                <h3 className="card-title">{song.name}</h3>
+                <button
+                  onClick={() => handleDelete(song.id!)}
+                  className="card-action-button"
+                >
+                  Delete
+                </button>
+              </div>
+            </MusicCard>
+          ))
+        )}
       </div>
     </div>
   );
@@ -307,50 +340,62 @@ function Albums() {
     }
   };
 
-  if (loading) return <div className="text-center py-8">Loading...</div>;
+  if (loading) return <div className="loading-spinner">Loading...</div>;
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Albums</h2>
+    <div className="content-container">
+      <div className="section-header">
+        <h2 className="section-title">Albums</h2>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          className="spotify-button primary"
         >
-          {showForm ? 'Cancel' : 'Add Album'}
+          {showForm ? 'Cancel' : '+ Add Album'}
         </button>
       </div>
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="mb-6 p-4 bg-gray-100 rounded">
-          <div className="mb-4">
-            <label className="block mb-2">Name:</label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-            Create Album
-          </button>
-        </form>
+        <div className="form-card">
+          <form onSubmit={handleSubmit} className="form-content">
+            <div className="form-group">
+              <label className="form-label">Album Name</label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="form-input"
+                placeholder="Enter album name"
+                required
+              />
+            </div>
+            <button type="submit" className="spotify-button success">
+              Create Album
+            </button>
+          </form>
+        </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {albums.map((album) => (
-          <div key={album.id} className="p-4 border rounded shadow">
-            <h3 className="font-bold text-lg">{album.name}</h3>
-            <button
-              onClick={() => handleDelete(album.id!)}
-              className="mt-2 bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
-            >
-              Delete
-            </button>
+      <div className="grid-layout">
+        {albums.length === 0 ? (
+          <div className="empty-state">
+            <p>No albums yet. Add your first album!</p>
           </div>
-        ))}
+        ) : (
+          albums.map((album) => (
+            <MusicCard key={album.id} gradient="gradient-blue">
+              <div className="card-content">
+                <div className="card-icon">💿</div>
+                <h3 className="card-title">{album.name}</h3>
+                <button
+                  onClick={() => handleDelete(album.id!)}
+                  className="card-action-button"
+                >
+                  Delete
+                </button>
+              </div>
+            </MusicCard>
+          ))
+        )}
       </div>
     </div>
   );
@@ -399,50 +444,62 @@ function Playlists() {
     }
   };
 
-  if (loading) return <div className="text-center py-8">Loading...</div>;
+  if (loading) return <div className="loading-spinner">Loading...</div>;
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Playlists</h2>
+    <div className="content-container">
+      <div className="section-header">
+        <h2 className="section-title">Playlists</h2>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          className="spotify-button primary"
         >
-          {showForm ? 'Cancel' : 'Add Playlist'}
+          {showForm ? 'Cancel' : '+ Add Playlist'}
         </button>
       </div>
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="mb-6 p-4 bg-gray-100 rounded">
-          <div className="mb-4">
-            <label className="block mb-2">Name:</label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-            Create Playlist
-          </button>
-        </form>
+        <div className="form-card">
+          <form onSubmit={handleSubmit} className="form-content">
+            <div className="form-group">
+              <label className="form-label">Playlist Name</label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="form-input"
+                placeholder="Enter playlist name"
+                required
+              />
+            </div>
+            <button type="submit" className="spotify-button success">
+              Create Playlist
+            </button>
+          </form>
+        </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {playlists.map((playlist) => (
-          <div key={playlist.id} className="p-4 border rounded shadow">
-            <h3 className="font-bold text-lg">{playlist.name}</h3>
-            <button
-              onClick={() => handleDelete(playlist.id!)}
-              className="mt-2 bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
-            >
-              Delete
-            </button>
+      <div className="grid-layout">
+        {playlists.length === 0 ? (
+          <div className="empty-state">
+            <p>No playlists yet. Create your first playlist!</p>
           </div>
-        ))}
+        ) : (
+          playlists.map((playlist) => (
+            <MusicCard key={playlist.id} gradient="gradient-pink">
+              <div className="card-content">
+                <div className="card-icon">🎶</div>
+                <h3 className="card-title">{playlist.name}</h3>
+                <button
+                  onClick={() => handleDelete(playlist.id!)}
+                  className="card-action-button"
+                >
+                  Delete
+                </button>
+              </div>
+            </MusicCard>
+          ))
+        )}
       </div>
     </div>
   );
@@ -494,60 +551,73 @@ function Users() {
     }
   };
 
-  if (loading) return <div className="text-center py-8">Loading...</div>;
+  if (loading) return <div className="loading-spinner">Loading...</div>;
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Users</h2>
+    <div className="content-container">
+      <div className="section-header">
+        <h2 className="section-title">Users</h2>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          className="spotify-button primary"
         >
-          {showForm ? 'Cancel' : 'Add User'}
+          {showForm ? 'Cancel' : '+ Add User'}
         </button>
       </div>
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="mb-6 p-4 bg-gray-100 rounded">
-          <div className="mb-4">
-            <label className="block mb-2">Username:</label>
-            <input
-              type="text"
-              value={formData.username}
-              onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-              className="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-2">Password:</label>
-            <input
-              type="password"
-              value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-            Create User
-          </button>
-        </form>
+        <div className="form-card">
+          <form onSubmit={handleSubmit} className="form-content">
+            <div className="form-group">
+              <label className="form-label">Username</label>
+              <input
+                type="text"
+                value={formData.username}
+                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                className="form-input"
+                placeholder="Enter username"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Password</label>
+              <input
+                type="password"
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                className="form-input"
+                placeholder="Enter password"
+                required
+              />
+            </div>
+            <button type="submit" className="spotify-button success">
+              Create User
+            </button>
+          </form>
+        </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {users.map((user) => (
-          <div key={user.id} className="p-4 border rounded shadow">
-            <h3 className="font-bold text-lg">{user.username}</h3>
-            <button
-              onClick={() => handleDelete(user.id!)}
-              className="mt-2 bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
-            >
-              Delete
-            </button>
+      <div className="grid-layout">
+        {users.length === 0 ? (
+          <div className="empty-state">
+            <p>No users yet. Add your first user!</p>
           </div>
-        ))}
+        ) : (
+          users.map((user) => (
+            <MusicCard key={user.id} gradient="gradient-orange">
+              <div className="card-content">
+                <div className="card-icon">👤</div>
+                <h3 className="card-title">{user.username}</h3>
+                <button
+                  onClick={() => handleDelete(user.id!)}
+                  className="card-action-button"
+                >
+                  Delete
+                </button>
+              </div>
+            </MusicCard>
+          ))
+        )}
       </div>
     </div>
   );
@@ -558,61 +628,49 @@ function App() {
   const [activeTab, setActiveTab] = useState<'artists' | 'songs' | 'albums' | 'playlists' | 'users'>('artists');
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <h1 className="text-3xl font-bold text-gray-900">Music App</h1>
+    <div className="spotify-app">
+      <header className="spotify-header">
+        <div className="header-content">
+          <h1 className="app-title">Music App</h1>
         </div>
       </header>
 
-      <nav className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex space-x-4">
-            <button
-              onClick={() => setActiveTab('artists')}
-              className={`py-4 px-4 border-b-2 ${
-                activeTab === 'artists' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-600'
-              }`}
-            >
-              Artists
-            </button>
-            <button
-              onClick={() => setActiveTab('songs')}
-              className={`py-4 px-4 border-b-2 ${
-                activeTab === 'songs' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-600'
-              }`}
-            >
-              Songs
-            </button>
-            <button
-              onClick={() => setActiveTab('albums')}
-              className={`py-4 px-4 border-b-2 ${
-                activeTab === 'albums' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-600'
-              }`}
-            >
-              Albums
-            </button>
-            <button
-              onClick={() => setActiveTab('playlists')}
-              className={`py-4 px-4 border-b-2 ${
-                activeTab === 'playlists' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-600'
-              }`}
-            >
-              Playlists
-            </button>
-            <button
-              onClick={() => setActiveTab('users')}
-              className={`py-4 px-4 border-b-2 ${
-                activeTab === 'users' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-600'
-              }`}
-            >
-              Users
-            </button>
-          </div>
+      <nav className="spotify-nav">
+        <div className="nav-content">
+          <button
+            onClick={() => setActiveTab('artists')}
+            className={`nav-button ${activeTab === 'artists' ? 'active' : ''}`}
+          >
+            🎤 Artists
+          </button>
+          <button
+            onClick={() => setActiveTab('songs')}
+            className={`nav-button ${activeTab === 'songs' ? 'active' : ''}`}
+          >
+            🎵 Songs
+          </button>
+          <button
+            onClick={() => setActiveTab('albums')}
+            className={`nav-button ${activeTab === 'albums' ? 'active' : ''}`}
+          >
+            💿 Albums
+          </button>
+          <button
+            onClick={() => setActiveTab('playlists')}
+            className={`nav-button ${activeTab === 'playlists' ? 'active' : ''}`}
+          >
+            🎶 Playlists
+          </button>
+          <button
+            onClick={() => setActiveTab('users')}
+            className={`nav-button ${activeTab === 'users' ? 'active' : ''}`}
+          >
+            👤 Users
+          </button>
         </div>
       </nav>
 
-      <main className="max-w-7xl mx-auto">
+      <main className="spotify-main">
         {activeTab === 'artists' && <Artists />}
         {activeTab === 'songs' && <Songs />}
         {activeTab === 'albums' && <Albums />}
